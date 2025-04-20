@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="printer" class="com.jam.spring_beginner.xml.Printer"/>
+
+    <bean id="helloService" class="com.jam.spring_beginner.xml.HelloService">
+        <property name="printer" ref="printer"/>
+<!--HelloService에서 setPrinter로 setter 방식을 사용했는데, set 뒤에 Printer가 오는걸 여기선 property name = "printer"라고 인식
+set 뒤에 대문자가 와도 속성에선 알아서 소문자로 인식함, 그렇다고 setprinter로 setter에서 다 소문자로 쓰면 안됨-->
+    </bean>
+
+</beans>
+
+<!--얘는 tab이나 space 상관없이 들여쓰기 막 가능
+yml 파일만 들여쓰기 space로만 해야함-->

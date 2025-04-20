@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: spring_beginner
+
+animal:
+  species: pig
+  sound: 나는 오늘 오므라이스를 먹은 돼지야
+
+# 반드시 스페이스 바로만 들여쓰기 해야함! tab으로 하면 오류남
