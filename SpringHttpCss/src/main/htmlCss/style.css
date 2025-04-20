@@ -1,0 +1,31 @@
+head{
+    background-color : antiquewhite;
+    color: saddlebrown;
+    font-size: 20px
+}
+
+body{
+    background-color : antiquewhite;
+    font-family: 'Arial', sans-serif;
+}
+
+h1{
+    color: saddlebrown;
+    font-size: 20px
+    text-align: center;
+}
+
+p{
+    color: saddlebrown;
+    font-size: 20px
+    padding: 10px
+}
+
+.box{
+    color: saddlebrown;
+    border: 2px saddlebrown;
+    padding: 20px;
+    margin: 20px
+    border-radius: 12px;
+    text-align: center;
+}
