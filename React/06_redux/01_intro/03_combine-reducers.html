@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/redux@4.2.0/dist/redux.js"></script>
+    <script crossorigin src="https://unpkg.com/react-redux@8.0.4/dist/react-redux.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const {Provider, useSelector, useDispatch} = ReactRedux;
+        // 각각의 state를 관리하는 reducer 함수를 합쳐주는 combineReducers
+        const {createStore, combineReducers} = Redux;
+
+        // 관리 할 상태 초기값 선언
+        const countState = {countInit : 10};
+        const isActiveState = {isActive : false};
+        const userState = { 
+            name : '',
+            email: '',
+            phone: ''
+        };
+
+        // reducer 함수
+        const rootReducer = combineReducers({
+            countReducer : (state = countState, {type, payload}) => {
+                console.log('카운터 리듀서 호출됨...');
+                switch(type) {
+                    case 'INCREMENT' : 
+                        return {
+                            countInit : state.countInit + payload.incrementValue
+                        }
+                    case 'DECREMENT' : 
+                        return {
+                            countInit : state.countInit - payload.incrementValue
+                        }
+                    default :
+                        return state;
+                }
+            },
+            activeReducer : (state = isActiveState, {type, payload}) => {
+                console.log('액티브 리듀서 호출됨...');
+                switch(type) {
+                    case 'TOGGLE' : 
+                        return {
+                            isActiveInit: !state.isActiveInit
+                        }
+                    default :
+                        return state;
+                    }
+            },
+            userReducer : (state = userState, {type, payload}) => {
+                console.log('유저 리듀서 호출됨...');
+                switch(type) {
+                    case 'INPUT' : 
+                        return {
+                            ...state, 
+                            [payload.name] : payload.value
+                        }
+                    default :
+                        return state;
+                    }
+            }
+        });
+
+        // store는 생성 시에 reducer 단 한개만 사용 가능, 따라서 combineReducers로 묶어준 rootReducer를 store에 등록한다.
+        const store = createStore(
+            rootReducer
+        );
+
+        function App() {
+
+            console.log('관리 상태들', useSelector(state => state));
+            const {countInit} = useSelector(state => state.countReducer);
+            const {isActiveInit} = useSelector(state => state.activeReducer);
+            const {name, email, phone} = useSelector(state => state.userReducer);
+            const dispatch = useDispatch();
+
+            const increaseCount = () => {
+                dispatch({
+                    type: 'INCREMENT',
+                    payload : {incrementValue: 1}
+                })
+            }
+
+            const decreaseCount = () => {
+                dispatch({
+                    type: 'DECREMENT',
+                    payload : {decrementValue: 1}
+                })
+            }
+
+            const toggleActive = () => {
+                dispatch({
+                    type: 'TOGGLE'
+                })
+            }
+
+            const onChangeHandler = (e) => {
+                dispatch({
+                    type: 'INPUT',
+                    payload : {
+                        name: e.target.name,
+                        value: e.target.value
+                    }
+                })
+            }
+
+            return(
+                <>
+                    <h1>Count : {countInit} </h1>
+                    <button onClick = {increaseCount}> +1 </button>
+                    <button onClick = {decreaseCount}> -1 </button>
+                    <hr/>
+                    <h1> isActive : {isActiveInit.toString()}</h1>
+                    <button onClick = {toggleActive}> 토글하기 </button>
+                    <hr/>
+                    <h3> input 타입</h3>
+                    <label> 이름: </label>
+                    <input type="text" name = "name" value={name} onChange = {onChangeHandler}/>
+                    <br/>
+                    <label> 이메일: </label>
+                    <input type="text" name = "email" value={email} onChange = {onChangeHandler}/>
+                    <br/>
+                    <label> 핸드폰: </label>
+                    <input type="text" name = "phone" value={phone} onChange = {onChangeHandler}/>
+                    <br/>
+                    <h3> name: {name}</h3>
+                    <h3> email: {email}</h3>
+                    <h3> phone: {phone} </h3>
+                </>
+            )
+        }
+
+
+
+        ReactDOM.createRoot(document.getElementById('root'))
+        .render(
+            <Provider store = {store}>    
+                <App/>
+            </Provider>)
+    
+
+
+    </script>
+    
+</body>
+</html>

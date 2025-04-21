@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/redux@4.2.0/dist/redux.js"></script>
+</head>
+<body>
+    <script>
+
+        const {createStore} = Redux;
+        console.log('Redux', Redux);
+
+        function reducer(state = 0, action) {
+            // console.log('action', action);
+
+            switch(action.type){
+                case 'INCREMENT' :
+                    return state + 1;
+                case 'DECREMENT' :
+                    return state - 1;
+                default :
+                    return state;
+            }
+        }
+
+        // 리덕스 저장소 만들기, reducer 함수를 store에 전달해줘야 함
+        // subscribe, dispatch, getState API 가 있음
+        const store = createStore(reducer);
+
+        // 스토어 구독 후 스토어가 관리하는 상태값 출력하는 구문 작성
+        store.subscribe(() => console.log(store.getState()));
+        // getState()로 dispatch 호출하는 구문
+
+        // dispatch 내부에 액션 전달
+        // store내부에 있는 reducer를 추적함
+        store.dispatch({type : 'INCREMENT'});
+        store.dispatch({type : 'INCREMENT'});
+        store.dispatch({type : 'INCREMENT'});
+        store.dispatch({type : 'DECREMENT'});
+
+    </script>
+</body>
+</html>

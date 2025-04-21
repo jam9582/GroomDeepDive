@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/redux@4.2.0/dist/redux.js"></script>
+    <script crossorigin src="https://unpkg.com/react-redux@8.0.4/dist/react-redux.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        const {Provider, useSelector, useDispatch} = ReactRedux;
+        //console.log(ReactRedux);
+
+        const {createStore} = Redux;
+
+        // 관리 할 상태의 초기갑 선언
+        const initState = 0;
+
+        // reducer  함수
+        function reducer(state = initState, {type, payload}) {
+            // console.log('추적이 되는지 확인 ...');
+            switch(type) {
+                case 'INCREMENT' :
+                    return state + payload.incrementValue;
+
+                case 'DECREMENT' :
+                    return state - payload.decrementValue;
+                default :
+                    return state;
+            }
+        }
+
+        const store = createStore(reducer);
+
+        function App() {
+
+            /*
+            - useSelector 훅을 사용해서 store가 관리하는 state 사용하기
+            - useSelector는 반드시 인자로 state를 매겨변수 하는 함수를 전달 받는다
+            */
+
+            const count = useSelector(state => state );
+
+            const dispatch = useDispatch();
+        
+            const increase = () => {
+                dispatch({
+                    type: 'INCREMENT', 
+                    payload: { incrementValue: 2}
+                })
+            }
+            const decrease = () => {
+                dispatch({
+                    type: 'DECREMENT', 
+                    payload: { decrementValue: 2}
+                })
+            }
+
+            return(
+                <>
+                    <h1>Count : {count}</h1>
+                    <button onClick={increase}> +2 </button>
+                    <button onClick={decrease}> -2 </button>
+                </>
+            )
+
+        }
+
+        ReactDOM.createRoot(document.getElementById('root'))
+        .render(
+            <Provider store = {store}>
+                <App/>
+            </Provider>
+        );
+
+    </script>
+    
+</body>
+</html>

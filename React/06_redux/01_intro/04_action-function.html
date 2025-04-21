@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/redux@4.2.0/dist/redux.js"></script>
+    <script crossorigin src="https://unpkg.com/react-redux@8.0.4/dist/react-redux.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type = "text/babel">
+
+        const {Provider, useSelector, useDispatch} = ReactRedux;
+        const {createStore} = Redux;
+
+        // Ducks 패턴: 초기값, 액션, 리듀서 를 관련있는 state(domain) 별로 modules 폴더에 저장한다
+
+        // --------------CountMoudule.js 파일 이라고 침 -----------------
+
+        // - 초기값: 
+        const initState = 0;
+
+        // 액션: 액션은 함수 형태로 재사용할 수 있도록 작성하며 dispatch 호출 시 인자로 전달할 값을 반환하는 함수를 만들어 둔다.
+
+        const INCREMENT = "count/INCREASE";
+        const DECREMENT = "count/DECREASE";
+
+        const increase = () => (
+            {
+                type : INCREMENT,
+                payload: {incrementValue:1}
+            }
+        )
+
+        const decrease = () => (
+            {
+                type : DECREMENT,
+                payload: {decrementValue:1}
+            }
+        )
+
+        // 리듀서
+        function reducer(state = initState, action) {
+            switch(action, type){
+                case INCREMENT : 
+                    return state + action.payload.incrementValue;
+                case DECREMENT : 
+                    return state - action.payload.incrementValue;
+                default :
+                    return state;
+            }
+
+        }
+        // --------------------------------------------------------------
+        // -------------------------------UI----------------------------   
+        function App() {
+            
+            const count = useSelector(state => state);
+            const dispatch = useDispatch();
+
+            const increaseCount = () => {
+                dispatch(increase());
+            }
+            const decreaseCount = () => {
+                dispatch(decrease());
+            }
+
+            return(
+                <>
+                    <h1> count: {Count} </h1>
+                    <button onClick={increaseCount}> +1 </button>
+                    <button onClick={decreaseCount}> -1 </button>
+                </>
+            )
+        }
+// ---------------------------------------------------------
+        
+        const store = createStore(
+            reducer
+        );
+
+        ReactDOM.createRoot(document.getElementById('root'))
+        .render(
+            <Provider store={store}>
+                <App/>
+            </Provider>
+        )
+
+    </script>
+</body>
+</html>
