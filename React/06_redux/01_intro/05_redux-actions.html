@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/redux@4.2.0/dist/redux.js"></script>
+    <script src="https://unpkg.com/react-redux@8.0.4/dist/react-redux.js"></script>
+    <script crossorigin src="https://unpkg.com/redux-actions@2.6.5/dist/react-actions.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        const {Provider, useSelector, useDispatch} = ReactRedux;
+        const {createStore} = Redux;
+        // console.log(ReduxActions);
+        const {createAction, createActions, handleActions } = ReduxActions;
+
+        /*  -------------------------------------------------------------- */
+
+        // 초기값
+        const initState = 0;
+
+        // 액션 
+        /* 
+        - 액션(주문서)은 함수형태로 재사용 할 수 있도록 작성하여 dispatch 호출 시에 인자로 전달할 값을 반환하는 함수를 만드는 것이 관례적
+        - type(형태), payload(생략 가능)
+        */
+
+        const INCREMENET = 'count/INCREASE'; // 접두사가 하나의 객체에 대한 부모, key 값으로 들어감, 뒤에 자식은 컴퓨터가 인식할때 increase라는 소문자로 인식함
+        const DECREMENET = 'count/DECREASE';
+
+        // 1. createAction 을 사용한 액션 함수 생성
+        // action은 type과 payload로 구성되어 있다.
+        // const increase = createAction( INCREMENET, ( amount=1 ) => ({incrementValue : amount}) );
+        // const decrease = createAction( DECREMENET, ( amount=1 ) => ({decrementValue : amount}) );
+
+        // console.log(increase());
+        // console.log(decrease());
+
+        // 2. createActions 를 이용한 액선 함수 설정
+
+        // const actions = createActions({
+        //     [INCREMENET] : (amount = 1) => ({incrementValue : amount})  ,
+        //     [DECREMENET] : (amount = 1) => ({decrementValue : amount})
+        // });
+        // console.log(actions);
+
+        // const {count} = createActions({ // 이렇게 하면 바로 위에 문단과 다르게 한꺼풀 벗겨져서 count까지 안 나오고 아래 increase, decrease 만 나옴
+        //     [INCREMENET] : (amount = 1) => ({incrementValue : amount})  ,
+        //     [DECREMENET] : (amount = 1) => ({decrementValue : amount})
+        // });
+        // console.log(count);
+
+        // 중첩 구조분해 할당으로 count 사용 대신 decrease, increase 사용
+        // 이렇게 해야 비로소 type: "count/INCREASE", payload: {incrementVlue: 1} 출력 됨
+        const {count : {increase, decrease}} = createActions({ // increase, decrease 라는 action 함수들을 미리 만들어 둔 것
+            [INCREMENET] : (amount = 1) => ({incrementValue : amount})  ,
+            [DECREMENET] : (amount = 1) => ({decrementValue : amount})
+        });
+        console.log(increase());
+
+        // 리듀서 생성
+        // 3. handleActions
+        // - switch 문을 사용하지 않고 action에 따라서 state를 처리하는 리듓 하수를 생성하게 해준다.
+        const reducer = handleActions(
+            {
+                [INCREMENT] : (state, {payload : {incrementValue}}) => { // {payload : {incrementValue}} 이거는 중첩 구조분해 할당
+                    return state + incrementValue;
+                } , 
+                [DECREMENT] : (state, {payload : {decrementValue}}) => {
+                    return state - decrementValue;
+                }
+            },
+            initState
+        )
+
+        /* -------------------------------------------------------------- */
+        function App() {
+
+            const count = useSelector(state => state); // reducer가 관리하는 값 initState 하나이므로 여기서도 state 하나만 넣음
+            const dispatch = useDispatch();
+
+            const increaseCount = () => {
+                dispatch(increase());
+            }
+
+            const decreaseCount = () => {
+                dispatch(decrease());
+            }
+
+            return (
+                <>
+                    <h1>Count: {count}</h1>
+                    <button onClick={increaseCount}>1 증가</button>
+                    <button onClick={decreaseCount}>1 감소</button>
+                </>
+            );
+        }
+        /* -------------------------------------------------------------- */
+
+        /* 스토어 */
+        const store = createStore(
+            reducer,
+            window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+        );
+
+        ReactDOM.createRoot(document.getElementById('root')).render(
+            <Provider store={store}>
+                <App/>
+            </Provider>
+        );
+    </script>
+</body>
+</html>
