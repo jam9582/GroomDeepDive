@@ -7,3 +7,10 @@ CREATE TABLE users (
 
 INSERT INTO users (username, password, role)
 VALUES ('testuser', '$2a$10$Q8U6tkF.buA8VCEd3qz4fO5s/5cAyUvYKmZcbngEvUwLIP/dRLioS', 'USER');
+
+INSERT INTO users (username, password, role)
+VALUES (
+           'testuser',
+           '$2a$10$Q8U6tkF.buA8VCEd3qz4fO5s/5cAyUvYKmZcbngEvUwLIP/dRLioS', -- "1234" 암호화
+           'USER'
+       );
