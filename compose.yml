@@ -1,0 +1,19 @@
+services:
+
+  springboot-app:
+    build:
+      context: ./chap01_01_bootProject
+      dockerfile: Dockerfile # :뒤에는 실제 내부에 들어있는 도커파일 이름
+    image: jjjam/boot_compose_project # 새로 만들 이미지 이름
+    container_name: boot_container # 새로 만들 컨테이너 이름
+    ports: 
+      - "8055:7777" # 저 위에 지정한 프로젝트의 포트
+
+  react-app: # 백엔드랑 똑같이 프론트 거 지정
+    build:
+      context: ./chap01_02_reactProject
+      dockerfile: Dockerfile 
+    image: jjjam/react_compose_project 
+    container_name: react_container 
+    ports: 
+      - "8011:5173" 
