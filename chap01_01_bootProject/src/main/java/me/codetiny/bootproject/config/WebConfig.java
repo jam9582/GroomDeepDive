@@ -12,8 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                // .allowedOrigins("http://localhost:5173") // 기존 프론트엔드 포트 주소
-                .allowedOrigins("http://localhost:8011") // 프론트 컨테이너 포트 주소
+                // ingress 적용 후 cors 설정은 필요 없어지게 된다. 클러스터 ip로 통신
+                .allowedOrigins()
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }

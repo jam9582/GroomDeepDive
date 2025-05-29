@@ -1,15 +1,32 @@
-FROM node:lts-alpine
-# alpine은 경량화된 버전, node.js 사용
+# FROM node:lts-alpine
+# WORKDIR /app
+# COPY . ./
+# RUN npm install
 
-WORKDIR /app 
-# 컨테이너 내부에서 쓸 수 있는 임시 폴더 생성
+# # 컨테이너가 시작될 때 실행할 명령어를 지정한다.
+# # npm run dev: Vite 개발 서버를 실행한다.
+# # --: npm 명령어의 옵션과 Vite 명령어의 옵션을 구분한다.
+# # --host 0.0.0.0: Vite 서버를 모든 네트워크 인터페이스에서 접근 가능하도록 설정한다.
+# #                 이는 Docker 컨테이너 외부에서 애플리케이션에 접근할 수 있게 한다.
+# CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
-COPY . ./
-# 프로젝트 관련 파일 복제
-
+FROM node:lts-alpine AS build-stage
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
-# react에서 가장 중요한 node_modules 실행
+COPY . .
+RUN npm run build
+# 여기가지는 /app이라는 가상의 폴더에 /dist 폴더를 넣어둔 것
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
-# npm run dev 대신에 컨테이너에 올라갈 때 실행시켜주는 명령어, 각 ,가 스페이스 바라고 생각하면 됨
-# dev 까지는 vite관련 설정, 그 뒤에 -- 부터는 npm 관련 설정
+# nginx 이미지를 사용하여 프로덕션 스테이지를 구성한다.
+FROM nginx:stable-alpine AS production-stage
+# 빌드 스테이지에서 생성된 정적 파일들을 Nginx의 기본 웹 서버 디렉토리로 복사한다.
+# 이렇게 하면 Nginx가 React.js 애플리케이션의 빌드된 파일들을 서빙할 수 있게 된다.
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+# 로컬 디렉토리의 nginx.conf 파일을 Nginx의 설정 디렉토리로 복사한다.
+# 이 설정 파일은 Nginx의 동작을 커스터마이즈하는데 사용된다.
+# 예를 들어, 라우팅 규칙, SSL 설정, 로깅 등을 정의할 수 있다.
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

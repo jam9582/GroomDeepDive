@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react002dep
+spec:
+  selector:
+    matchLabels:
+      app: react002kube
+  template:
+    metadata:
+      labels:
+        app: react002kube
+    spec:
+      containers:
+      - name: react-container
+        image: jjjam/goorm_r_proj:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80      # 5173이 아니라 80으로 바꿔야 한다.
