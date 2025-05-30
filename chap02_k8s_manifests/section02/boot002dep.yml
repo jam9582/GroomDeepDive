@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: boot-container
-        image: jjjam/goorm_b_proj:latest
+        image: jjjam/jen_boot:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 7777

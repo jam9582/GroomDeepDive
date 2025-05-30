@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: react-container
-        image: jjjam/goorm_r_proj:latest
+        image: jjjam/jen_boot:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 80      # 5173이 아니라 80으로 바꿔야 한다.
